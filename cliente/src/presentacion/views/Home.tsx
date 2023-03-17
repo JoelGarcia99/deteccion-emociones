@@ -1,15 +1,25 @@
 import { PlayCircleFilled } from "@mui/icons-material";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 import classMerge from "../../core/utils/class_merge";
+import RouteNames from "../routes/names.route";
 import MediaCard from "../shared_widgets/Card";
 import AppBarComponent from "../shared_widgets/Navbar";
 
 const HomeScreen = () => {
+
+  const navigator = useNavigate();
+
   return <>
     <AppBarComponent />
     <div
       id="info-banned"
+      style={{
+        backgroundImage: "url('rrz1.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
       className={
         classMerge(
           "flex flex-col justify-center items-center",
@@ -17,24 +27,39 @@ const HomeScreen = () => {
         )
       }
     >
-      <h1
+      <div
         className={
           classMerge(
-            "text-[3rem] text-center font-bold",
+            "flex flex-col justify-center items-center",
+            "bg-white bg-opacity-50",
+            "w-full h-full py-[5rem]"
           )
         }
       >
-        Bienvenido al sistema de detección de emociones
-      </h1>
-      <hr />
-      <span>Herramienta de aprensizaje automático para la detección de emociones</span>
-      <br />
-      <br />
-      <br />
-      <br />
-      <Button variant="contained" startIcon={<PlayCircleFilled />}>
-        Empezar
-      </Button>
+        <h1
+          className={
+            classMerge(
+              "text-[3rem] text-center font-bold",
+            )
+          }
+        >
+          Bienvenido al sistema de detección de emociones
+        </h1>
+        <hr />
+        <span>Herramienta de aprensizaje automático para la detección de emociones</span>
+        <br />
+        <br />
+        <br />
+        <br />
+        <Button
+          variant="contained"
+          startIcon={<PlayCircleFilled />}
+          onClick={() => navigator(RouteNames.PROCESS)}
+        >
+          Empezar
+        </Button>
+      </div>
+
     </div>
     <div
       id="cores"
@@ -100,6 +125,24 @@ const HomeScreen = () => {
         <br />
         <span>
           El sistema fue desarrollado por estudiantes de la Universidad Técnica de Manabí como proyecto final de carrera
+        </span>
+        <br />
+        <br />
+
+        <small>Universidad Técnica de Manabí</small>
+        <br />
+
+        <small>Facultad de Ciencias Informáticas ©</small>
+      </div>
+      <div className="flex-col justify-start items-start text-white">
+        <h1
+          className="font-bold text-xl min-w-[300px]"
+        >
+          Tutor responsable
+        </h1>
+        <br />
+        <span>
+          Leonardo Javier Chancay García, Ph.D
         </span>
         <br />
         <br />
