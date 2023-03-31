@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  tesis_deteccion_emociones:
+    image: tesis_deteccion_emociones
+    container_name: tesis_deteccion_emociones
+    restart: always 
+    tty: true
+    ports:
+      - 8000:8000
+      - 3000:3000
+      - 5432:5432
+    networks:
+      - app-network
+    volumes:
+      - ./.data/:/var/lib/postgresql/data
+      - ./:/app/
+networks:
+  app-network:
+    driver: bridge
