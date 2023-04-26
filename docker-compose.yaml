@@ -1,19 +1,21 @@
 version: "3.7"
 services:
   tesis_deteccion_emociones:
-    image: tesis_deteccion_emociones
+    image: postgres:bullseye
     container_name: tesis_deteccion_emociones
     restart: always 
     tty: true
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=deteccion_emociones
     ports:
-      - 8000:8000
-      - 3000:3000
       - 5432:5432
     networks:
       - app-network
     volumes:
-      - ./.data/:/var/lib/postgresql/data
-      - ./:/app/
+      - ./pgdata:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
 networks:
   app-network:
     driver: bridge

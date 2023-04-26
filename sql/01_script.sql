@@ -1,5 +1,7 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE "Usuario" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1()),
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "email" varchar(256) UNIQUE NOT NULL,
   "emailRecuperacion" varchar(256),
   "password" char(64) NOT NULL,
@@ -11,25 +13,25 @@ CREATE TABLE "Usuario" (
 );
 
 CREATE TABLE "Recurso" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v1()),
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "nombre" varchar(250) NOT NULL,
-  "tipo" enum NOT NULL,
+  "tipo" varchar(50) NOT NULL,
   "url" text,
   "embebido" text,
   "proposito" text
 );
 
 CREATE TABLE "Media" (
-  "id" PK DEFAULT (uuid_generate_v1()),
+  "id" uuid primary key DEFAULT (uuid_generate_v4()),
   "url" text NOT NULL,
-  "tipo" enum NOT NULL,
+  "tipo" varchar(50) NOT NULL,
   "createdAt" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "Prediccion" (
   "usuarioId" uuid NOT NULL,
   "emocionDetectada" varchar(150) NOT NULL,
-  "recursoId" text NOT NULL,
+  "recursoId" uuid NOT NULL,
   "mediaId" uuid NOT NULL,
   "createdAt" timestamptz NOT NULL DEFAULT (now())
 );
