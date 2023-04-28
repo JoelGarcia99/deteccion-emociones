@@ -1,8 +1,20 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(8000);
+
+  app.useGlobalPipes(
+    new ValidationPipe(
+      {
+        // lanza una excepcion si no se encuentra el campo
+        forbidNonWhitelisted: true,
+      }
+    )
+  );
+
+  app.setGlobalPrefix('api');
+  await app.listen(process.env.API_PORT);
 }
 bootstrap();

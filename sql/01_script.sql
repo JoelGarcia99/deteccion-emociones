@@ -4,7 +4,7 @@ CREATE TABLE "Usuario" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "email" varchar(256) UNIQUE NOT NULL,
   "emailRecuperacion" varchar(256),
-  "password" char(64) NOT NULL,
+  "password" char(60) NOT NULL,
   "nombre" varchar(200) NOT NULL,
   "fechaNacimiento" timestamptz,
   "refreshToken" text,
