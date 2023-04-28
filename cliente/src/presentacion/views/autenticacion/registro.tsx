@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -14,6 +12,10 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link as RRDLink } from 'react-router-dom';
 import RouteNames from '../../routes/names.route';
+import AuthController from '../../redux/events/auth.event';
+import { AppDispatch } from '../../redux/store';
+import { useDispatch } from 'react-redux';
+import { User } from '../../../dominio/entities/user.entity';
 
 function Copyright(props: any) {
   return (
@@ -31,13 +33,21 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignUp() {
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    const authController = new AuthController();
+    dispatch(authController.signup(
+      {
+        nombre: `${data.get('firstName')} ${data.get('lastName')}`,
+        email: data.get('email'),
+      } as User,
+      (data.get('password') ?? '').toString(),
+    ));
   };
 
   return (

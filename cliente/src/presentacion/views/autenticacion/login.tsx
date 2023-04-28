@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -13,7 +12,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import RouteNames from '../../routes/names.route';
-import { Link as RRDLink, useNavigate } from 'react-router-dom';
+import { Link as RRDLink } from 'react-router-dom';
+import AuthController from '../../redux/events/auth.event';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store';
+import { Button } from '@mui/material';
 
 function Copyright(props: any) {
   return (
@@ -31,16 +34,17 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function SignIn() {
-  const navigator = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-    // TODO: complete this 
-    navigator(RouteNames.HOME);
+
+    const authController = new AuthController();
+    dispatch(authController.login(
+      (data.get('email') ?? '').toString(),
+      (data.get('password') ?? '').toString()
+    ));
   };
 
   return (
@@ -58,9 +62,11 @@ export default function SignIn() {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
+
           <Typography component="h1" variant="h5">
             Inicio de sesión
           </Typography>
+
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -82,10 +88,6 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Recuérdame"
-            />
             <Button
               type="submit"
               fullWidth
@@ -96,7 +98,8 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <RRDLink to="#"
+                <RRDLink
+                  to="#"
                   className="text-blue-600 text-sm"
                 >
                   ¿Olvidó su contraseña?

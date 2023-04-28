@@ -7,10 +7,10 @@ import RouteNames from "./names.route";
 import PrivateWrapper from "./private.route";
 import PublicRouteWrapper from "./public.route";
 
-const router = createBrowserRouter([
+const router = (isAuthenticated: boolean) => createBrowserRouter([
   {
     // TODO: parameterize the [isAuthenticated] param
-    element: <PrivateWrapper isAuthenticated={true} />,
+    element: <PrivateWrapper isAuthenticated={isAuthenticated} />,
     children: [
       {
         path: RouteNames.HOME,
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    element: <PublicRouteWrapper isAuthenticated={true} />,
+    element: <PublicRouteWrapper isAuthenticated={isAuthenticated} />,
     children: [
       {
         path: RouteNames.LOGIN,

@@ -12,6 +12,10 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import AuthController from '../redux/events/auth.event';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
+import { AuthState } from '../redux/reducers/auth.reducer';
 
 const pages = ['Uso', 'Información', 'Ingresar'];
 const settings = ['Perfil', 'Historial', 'Salir'];
@@ -34,6 +38,25 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth) as AuthState;
+
+  function handleEvent(setting: string): void {
+
+    const authController = new AuthController();
+
+    switch (setting) {
+      case 'Salir': {
+        dispatch(authController.logout());
+        break;
+      }
+      default: {
+        alert(setting);
+      }
+    }
+
+  }
 
   return (
     <AppBar position="static">
@@ -127,9 +150,12 @@ function ResponsiveAppBar() {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
+              <>
+                {user?.email} &nbsp;
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </>
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}
@@ -148,7 +174,7 @@ function ResponsiveAppBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={() => handleEvent(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
