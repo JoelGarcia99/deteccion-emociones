@@ -22,8 +22,6 @@ export class AuthService {
     // extrayendo credenciales de usuario
     const { password } = signUp;
 
-    console.log("Coming password", password);
-
     // cifrando password
     const hashedPassword = bcrypt.hashSync(password, 10);
     const dtoUser = this.userRepository.create({
@@ -80,6 +78,8 @@ export class AuthService {
       });
     }
 
+    // removing the password
+    delete user.password;
 
     if (!bcrypt.compareSync(password, user.password)) {
       throw new BadRequestException({
