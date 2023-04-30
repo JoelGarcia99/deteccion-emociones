@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UUIDUtil } from 'src/utils/uuid.util';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -10,12 +11,13 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly uuidUtil: UUIDUtil,
   ) { }
 
   async findOne(id: string) {
 
     // checking if [id] is a valid uuid
-    if (!id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/)) {
+    if (!this.uuidUtil.validate(id)) {
       throw new NotFoundException('Usuario no existe');
     }
 
@@ -33,7 +35,13 @@ export class UserService {
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+
+    // checking if [id] is a valid uuid
+    if (!this.uuidUtil.validate(id)) {
+      throw new NotFoundException('Usuario no existe');
+    }
+
+    return this.userRepository.update(id, updateUserDto);
   }
 }

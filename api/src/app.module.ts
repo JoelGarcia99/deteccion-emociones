@@ -5,6 +5,7 @@ import { joiValidationSchema } from './config/joi.config';
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { UtilsModule } from './utils/utils.module';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
     }),
-    UserModule, AuthModule,
+    UserModule, AuthModule, UtilsModule,
   ],
 })
 export class AppModule { }
