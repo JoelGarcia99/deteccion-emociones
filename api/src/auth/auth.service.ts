@@ -78,14 +78,14 @@ export class AuthService {
       });
     }
 
-    // removing the password
-    delete user.password;
-
     if (!bcrypt.compareSync(password, user.password)) {
       throw new BadRequestException({
         error: 'Credenciales incorrectas',
       });
     }
+
+    // removing the password
+    delete user.password;
 
     const payload: IJWTPayload = {
       id: user.id,

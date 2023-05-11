@@ -3,6 +3,7 @@ import SignIn from "../views/autenticacion/login";
 import SignUp from "../views/autenticacion/registro";
 import HomeScreen from "../views/Home";
 import { ProcessStep } from "../views/process/process_step";
+import { UserProfile } from "../views/profile/profile.edit";
 import RouteNames from "./names.route";
 import PrivateWrapper from "./private.route";
 import PublicRouteWrapper from "./public.route";
@@ -23,6 +24,10 @@ const router = (isAuthenticated: boolean) => createBrowserRouter([
       {
         path: RouteNames.PROCESS,
         element: <ProcessStep />,
+      },
+      {
+        path: RouteNames.PROFILE,
+        element: <UserProfile />,
       },
     ],
   },

@@ -16,13 +16,16 @@ import AuthController from '../redux/events/auth.event';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { AuthState } from '../redux/reducers/auth.reducer';
+import { useNavigate } from 'react-router-dom';
+import RouteNames from '../routes/names.route';
 
-const pages = ['Uso', 'Información', 'Ingresar'];
+const pages = ['Uso', 'Información'];
 const settings = ['Perfil', 'Historial', 'Salir'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const navigator = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -51,6 +54,10 @@ function ResponsiveAppBar() {
         dispatch(authController.logout());
         break;
       }
+      case 'Perfil': {
+        navigator(RouteNames.PROFILE);
+        break;
+      }
       default: {
         alert(setting);
       }
@@ -62,10 +69,9 @@ function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
-            noWrap
+
             component="a"
             href="/"
             sx={{
@@ -73,7 +79,7 @@ function ResponsiveAppBar() {
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'monospace',
               fontWeight: 700,
-              letterSpacing: '.3rem',
+              letterSpacing: '.2rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
@@ -117,10 +123,8 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
-            noWrap
             component="a"
             href=""
             sx={{
