@@ -21,10 +21,11 @@ export const WebcamCapture = ({
 
   const [devices, setDevices] = React.useState<MediaDeviceInfo[]>([]);
   const [base64Image, setBase64Image] = React.useState<string>('');
+  const [predictedEmotion, setPredictedEmotion] = React.useState<string>('');
 
   const webcamRef = React.useRef<Webcam>(null);
   const capture = React.useCallback(
-    () => {
+    async () => {
       const imageSrc = webcamRef.current?.getScreenshot();
       if (imageSrc) {
         setBase64Image(imageSrc);

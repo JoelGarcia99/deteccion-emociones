@@ -14,6 +14,8 @@ import { WebcamCapture } from './webcam_capture';
 import { useState } from 'react';
 import { ClipLoader } from 'react-spinners';
 import socketIOClient, { Socket } from "socket.io-client";
+import { ImageProcessing } from './image_processing';
+import { Recommendations } from './recommendations';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -89,36 +91,7 @@ export function ProcessStep() {
 
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const [capturedImg, setCaptureImg] = React.useState<string | null>(null);
-  let [loading, setLoading] = useState(true);
-
-  // defining websocket strategy
-  const [socket, setSocket] = React.useState<Socket | null>(null);
-
-  React.useEffect(() => {
-    const connect = () => {
-      const ws = 'http://localhost:8000/';
-      const socket = socketIOClient(ws, {
-        transports: ['websocket'],
-      });
-
-      setSocket(socket);
-
-      socket.on('connect', () => {
-        console.log('connected');
-        socket.emit('detection', 'Hi, from Frontend');
-      });
-
-      socket.on('disconnect', () => {
-        console.log('disconnected');
-      });
-
-      socket.on('detection', (data) => {
-        console.log('dtection data', data);
-      });
-    }
-
-    connect();
-  }, [])
+  const [emotion, setDetectedEmotion] = React.useState<string | null>(null);
 
   const components = [
     <WebcamCapture
@@ -127,24 +100,19 @@ export function ProcessStep() {
         setActiveStep(1);
       }}
     />,
-    <div
-      className='flex flex-col items-center justify-center'
-    >
-      <h2
-        className="text-xl font-bold"
-      >
-        Analizando imagen
-      </h2>
-      <ClipLoader
-        color={"blue"}
-        loading={loading}
-        size={60}
-        aria-label="Loading Spinner"
-        data-testid="loader"
-      />
-      <span>Trabajando sobre la siguiente imagen</span>
-      <img src={capturedImg ?? ''} />
-    </div>
+    <ImageProcessing
+      imageSrc={capturedImg}
+      onNext={(emotion) => {
+        setDetectedEmotion(emotion);
+        setActiveStep(2);
+      }}
+      onBack={() => setActiveStep(0)}
+    />,
+    <Recommendations
+      imageSrc={capturedImg}
+      emotion={emotion}
+      onReboot={() => setActiveStep(0)}
+    />
   ];
 
   return (
