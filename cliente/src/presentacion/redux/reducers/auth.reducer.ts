@@ -35,6 +35,12 @@ export default function authReducer(state: AuthState = {}, action: PayloadAction
         accessToken: action.payload.accessToken,
       }
     }
+    case AppActions.UPDATE_USER: {
+      return {
+        ...state,
+        user: action.payload.user,
+      }
+    }
     default: return state;
   }
 }

@@ -1,13 +1,14 @@
 import { Button, Grid, TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AuthState } from '../../redux/reducers/auth.reducer';
-import { RootState } from '../../redux/store';
+import { AppDispatch, RootState } from '../../redux/store';
 import AppBarComponent from "../../shared_widgets/Navbar";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { User } from '../../../dominio/entities/user.entity';
+import UserController from '../../redux/events/user.event';
 
 export const UserProfile = () => {
 
@@ -18,6 +19,7 @@ export const UserProfile = () => {
     ...user!,
   })
 
+  const dispatch = useDispatch<AppDispatch>();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -32,7 +34,9 @@ export const UserProfile = () => {
   }
 
   const updateData = () => {
-    alert("Actualizando datos");
+    const userController = new UserController();
+
+    dispatch(userController.update(userAux));
   }
 
   const updatePassword = () => {
