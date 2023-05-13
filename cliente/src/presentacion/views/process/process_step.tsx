@@ -13,6 +13,7 @@ import { StepIconProps } from '@mui/material/StepIcon';
 import { WebcamCapture } from './webcam_capture';
 import { useState } from 'react';
 import { ClipLoader } from 'react-spinners';
+import socketIOClient, { Socket } from "socket.io-client";
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -89,6 +90,35 @@ export function ProcessStep() {
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const [capturedImg, setCaptureImg] = React.useState<string | null>(null);
   let [loading, setLoading] = useState(true);
+
+  // defining websocket strategy
+  const [socket, setSocket] = React.useState<Socket | null>(null);
+
+  React.useEffect(() => {
+    const connect = () => {
+      const ws = 'http://localhost:8000/';
+      const socket = socketIOClient(ws, {
+        transports: ['websocket'],
+      });
+
+      setSocket(socket);
+
+      socket.on('connect', () => {
+        console.log('connected');
+        socket.emit('detection', 'Hi, from Frontend');
+      });
+
+      socket.on('disconnect', () => {
+        console.log('disconnected');
+      });
+
+      socket.on('detection', (data) => {
+        console.log('dtection data', data);
+      });
+    }
+
+    connect();
+  }, [])
 
   const components = [
     <WebcamCapture
