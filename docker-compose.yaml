@@ -1,9 +1,9 @@
 version: "3.7"
 services:
-  tesis_deteccion_emociones:
+  db:
     image: postgres:bullseye
-    container_name: tesis_deteccion_emociones
-    restart: always 
+    container_name: tde_postgres
+    restart: on-failure
     tty: true
     environment:
       - POSTGRES_USER=postgres
@@ -16,6 +16,48 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
       - ./sql:/docker-entrypoint-initdb.d
+  backend:
+    image: tde_backend
+    container_name: tde_backend
+    command: yarn run start:dev
+    volumes:
+      - ./api:/app/backend
+    depends_on:
+      - db
+    ports:
+      - 8500:8500
+    networks:
+      - app-network
+    environment:
+      - DB_NAME=deteccion_emociones
+      - DB_HOST=db
+      - JWT_SECRET=secret
+  predictor:
+    image: tde_predictor
+    container_name: tde_predictor
+    command: python3 deep_face_server.py
+    volumes:
+      - ./predictor:/app/predictor
+    ports:
+      - 8200:8200
+    networks:
+      - app-network
+  cliente:
+    image: tde_frontend
+    container_name: tde_frontend
+    command: yarn start
+    volumes:
+      - ./cliente:/app/frontend
+    depends_on:
+      - backend
+      - predictor
+    ports:
+      - 3000:3000
+    networks:
+      - app-network
+    environment:
+      - REACT_APP_API_HOST=http://localhost:8500
+      - REACT_APP_MODEL_HOST=http://localhost:8200
 networks:
   app-network:
     driver: bridge

@@ -14,9 +14,9 @@ export const ImageProcessing = (props: ImageProcessingProps) => {
 
   useEffect(() => {
 
-    const process = async () => {
+    const process_image = async () => {
       const blob = await fetch(props.imageSrc!).then((r) => r.blob());
-      const url = 'http://localhost:8200/predict';
+      const url = `${process.env.REACT_APP_MODEL_HOST}/predict`;
       const formData = new FormData();
       formData.append('image', blob);
 
@@ -36,7 +36,7 @@ export const ImageProcessing = (props: ImageProcessingProps) => {
       }
     }
 
-    process();
+    process_image();
   }, [props.imageSrc]);
 
   return (

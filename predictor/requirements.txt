@@ -1,0 +1,5 @@
+Flask-Cors==3.0.10
+Flask==2.2.2
+numpy==1.24.1
+deepface==0.0.79
+opencv-python==4.7.0.72

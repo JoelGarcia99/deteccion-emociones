@@ -1,2 +1,0 @@
-Flask-Cors
-azure-cognitiveservices-vision-face
