@@ -1,10 +1,10 @@
 from PIL import Image
 import cv2
-from deepface.commons.functions import base64
+from deepface.commons.functions import
 import numpy as np
 
 
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from deepface import DeepFace
 app = Flask(__name__)
@@ -14,7 +14,6 @@ CORS(app)
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({'status': 'ok'})
-
 
 @app.route('/predict', methods=['POST'])
 def predict():
