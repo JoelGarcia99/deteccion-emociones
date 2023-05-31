@@ -4,6 +4,6 @@ WORKDIR /app/backend
 
 COPY . .
 
-RUN yarn
+RUN yarn install
 
 EXPOSE 8500

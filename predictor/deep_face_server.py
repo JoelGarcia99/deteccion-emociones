@@ -1,6 +1,5 @@
 from PIL import Image
 import cv2
-from deepface.commons.functions import
 import numpy as np
 
 
