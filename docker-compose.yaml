@@ -19,7 +19,7 @@ services:
   backend:
     image: tde_backend
     container_name: tde_backend
-    command: yarn run start:dev
+    command: sh -c "yarn && yarn start"
     volumes:
       - ./api:/app/backend
     depends_on:
@@ -45,7 +45,7 @@ services:
   cliente:
     image: tde_frontend
     container_name: tde_frontend
-    command: yarn start
+    command: sh -c "yarn && yarn start"
     volumes:
       - ./cliente:/app/frontend
     depends_on:
