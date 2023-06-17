@@ -11,6 +11,7 @@ async function bootstrap() {
       {
         // lanza una excepcion si no se encuentra el campo
         forbidNonWhitelisted: true,
+        whitelist: true
       }
     )
   );

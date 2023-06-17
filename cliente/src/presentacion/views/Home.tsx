@@ -111,8 +111,8 @@ const HomeScreen = () => {
     <footer
       className={
         classMerge(
-          "flex flex-col md:flex-row justify-start items-between gap-4 bg-indigo-900",
-          "p-[5rem]"
+          "flex flex-col md:flex-row justify-start items-between gap-6 bg-indigo-900",
+          "p-[5rem] text-justify"
         )
       }
     >
@@ -124,7 +124,10 @@ const HomeScreen = () => {
         </h1>
         <br />
         <span>
-          El sistema fue desarrollado por estudiantes de la Universidad Técnica de Manabí como proyecto final de carrera
+          El presente sistema se encuentra desarrollado usando principalmente las tecnologías de
+          Python, OpenCV y TensorFlow. El objetivo principal es servir de soporte en la identificación
+          de emociones en menores lo cual puede ser una tarea un poco compleja si no se tiene la
+          experiencia suficiente.
         </span>
         <br />
         <br />
@@ -142,15 +145,9 @@ const HomeScreen = () => {
         </h1>
         <br />
         <span>
-          Leonardo Javier Chancay García, Ph.D
+          Ing. Leonardo Javier Chancay García, Ph.D
         </span>
         <br />
-        <br />
-
-        <small>Universidad Técnica de Manabí</small>
-        <br />
-
-        <small>Facultad de Ciencias Informáticas ©</small>
       </div>
       <div className="flex-col justify-start items-start text-white">
         <h1
@@ -165,12 +162,12 @@ const HomeScreen = () => {
         <br />
         <br />
         <div className="flex flex-row items-center gap-4">
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />&nbsp;Nombre1 Apellido1 Apellido2
+          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />&nbsp;Valeriano Saldarriaga Ricardo
         </div>
         <br />
 
         <div className="flex flex-row items-center gap-4">
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />&nbsp;Nombre1 Apellido1 Apellido2
+          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />&nbsp;Ronny Zamora Alférez
         </div>
 
       </div>

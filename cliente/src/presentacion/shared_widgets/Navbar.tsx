@@ -11,7 +11,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import AuthController from '../redux/events/auth.event';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
@@ -19,7 +18,7 @@ import { AuthState } from '../redux/reducers/auth.reducer';
 import { useNavigate } from 'react-router-dom';
 import RouteNames from '../routes/names.route';
 
-const pages = ['Uso', 'Información'];
+const pages = ['Uso'];
 const settings = ['Perfil', 'Historial', 'Salir'];
 
 function ResponsiveAppBar() {
