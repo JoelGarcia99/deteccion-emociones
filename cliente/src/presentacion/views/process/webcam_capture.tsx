@@ -42,7 +42,17 @@ export const WebcamCapture = ({
   );
 
   React.useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then(handleDevices)
+    navigator.permissions.query({name: 'camera' as PermissionName})
+    .then(function(permissionStatus) {
+        if(permissionStatus.state === 'granted') {
+          navigator.mediaDevices.enumerateDevices().then(handleDevices)
+        }
+      permissionStatus.onchange = function() {
+        if(permissionStatus.state === 'granted') {
+          navigator.mediaDevices.enumerateDevices().then(handleDevices)
+        }
+      };
+    });
   }, [handleDevices]);
 
   // determines all the video devices available on the user device
