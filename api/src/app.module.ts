@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { UtilsModule } from './utils/utils.module';
 import { DeepfaceModule } from './deepface/deepface.module';
+import { ResourcesModule } from './resources/resources.module';
 
 @Module({
   imports: [
@@ -24,7 +25,7 @@ import { DeepfaceModule } from './deepface/deepface.module';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
     }),
-    UserModule, AuthModule, UtilsModule, DeepfaceModule
+    UserModule, AuthModule, UtilsModule, DeepfaceModule, ResourcesModule
   ],
 })
 export class AppModule { }

@@ -1,39 +1,67 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "src/user/entities/user.entity";
+import { ExtractJwt, Strategy } from "passport-jwt";
 import { Repository } from "typeorm";
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { IJWTPayload } from "../interfaces/jwt.payload";
+import { UnauthorizedException } from "@nestjs/common";
+import { User } from "src/user/entities/user.entity";
+import { AuthService } from "../auth.service";
 
-@Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export interface AccessTokenPayload {
+  userId: string;
+  exp?: number | undefined;
+}
+
+export interface JwtStrategyOutput {
+  user: User,
+  accessToken: string;
+}
+
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly authService: AuthService,
   ) {
     super({
-      secretOrKey: process.env.JWT_SECRET,
-      ignoreExpiration: false,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: true,
+      passReqToCallback: true,
+      secretOrKey: process.env.JWT_SECRET,
     });
   }
 
-  async validate(payload: IJWTPayload): Promise<User> {
-    const { id } = payload;
+  async validate(req: Request, payload: AccessTokenPayload): Promise<JwtStrategyOutput> {
+    console.log("Validation enteirng")
+    const bearerToken = req.headers['authorization'].split(' ')[1];
 
-    // looking for the user in the database
-    const user = await this.userRepository.findOneBy({ id });
+    // getting the new access token 
+    let accessToken: string | null;
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid token');
+    try {
+      accessToken = await this.authService.checkAccessToken(bearerToken);
+    } catch (e) {
+      console.error(e);
+      throw e;
     }
 
-    // TODO: validate inactive users
-    // ....
+    if (!accessToken) {
+      throw new UnauthorizedException("Invalid access token");
+    }
 
-    // this will be added to the request automatically
-    return user;
+    const user = await this.userRepository.findOne({
+      where: {
+        id: payload.userId,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException("Inactive session");
+    }
+
+    return {
+      user,
+      accessToken,
+    };
   }
 }

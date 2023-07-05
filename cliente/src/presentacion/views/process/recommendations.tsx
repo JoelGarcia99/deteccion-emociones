@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import { translateEmotion } from '../../../core/utils/emotion_translator';
 
 interface RecommendationsProps {
@@ -36,16 +36,38 @@ export const gamesLink: any = {
     "https://cdn.htmlgames.com/WizardJewels/",
     "https://cdn.htmlgames.com/ClassicSnake/",
     "https://cdn.htmlgames.com/DarkMahjongConnect/",
+  ],
+  'fear': [
+    "https://cdn.htmlgames.com/GreedyWorm/",
+    "https://cdn.htmlgames.com/ClassicSnake/",
+    "https://cdn.htmlgames.com/WizardJewels/",
+    "https://cdn.htmlgames.com/ClassicSnake/",
+    "https://cdn.htmlgames.com/DarkMahjongConnect/",
+  ],
+  'surprise': [
+    "https://cdn.htmlgames.com/GreedyWorm/",
+    "https://cdn.htmlgames.com/ClassicSnake/",
+    "https://cdn.htmlgames.com/WizardJewels/",
+    "https://cdn.htmlgames.com/ClassicSnake/",
+    "https://cdn.htmlgames.com/DarkMahjongConnect/",
   ]
 }
 
 export const Recommendations = (props: RecommendationsProps) => {
 
-  console.log("emotion", props.emotion)
   const emotion = props.emotion!;
   const suggestion = gamesLink[emotion][
     Math.floor(Math.random() * gamesLink[emotion].length)
   ];
+
+  // Here I'll save the prediction directly to the user account
+  useEffect(() => {
+    // TODO: save the prediction to the user account
+    const emotion = props.emotion;
+    const image = props.imageSrc;
+  }, []);
+
+  console.log(props.imageSrc)
 
   return (
     <div className="flex flex-col items-center justify-center">
