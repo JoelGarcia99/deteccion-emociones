@@ -1,5 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
+/**
+ * This entity is intended to represent a resource within the system 
+ * which can be any video, embeded videogame, music, etc.
+ */
 @Entity("Recurso")
 export class Resource {
   @PrimaryGeneratedColumn('uuid')
@@ -34,4 +38,6 @@ export class Resource {
   @Column({ nullable: true })
   embebido?: string;
 
+  @Column()
+  proposito: string;
 }

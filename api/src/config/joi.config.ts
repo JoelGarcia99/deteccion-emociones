@@ -12,8 +12,8 @@ export const joiValidationSchema = Joi.object({
   DB_NAME: Joi.string().required(),
 
   JWT_SECRET: Joi.string().required(),
-  JWT_EXPIRATION_TIME: Joi.string().default('30min'),
-  JWT_REFRESH_EXPIRATION_TIME: Joi.string().default('2h'),
+  JWT_EXPIRATION_TIME: Joi.string().default('30d'),
+  JWT_REFRESH_EXPIRATION_TIME: Joi.string().default('60d'),
 
   API_PORT: Joi.number().default(8500),
 });

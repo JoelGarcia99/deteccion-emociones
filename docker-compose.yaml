@@ -19,7 +19,8 @@ services:
   backend:
     image: tde_backend
     container_name: tde_backend
-    command: sh -c "yarn && yarn start"
+    command: sh -c "yarn && yarn run start:dev"
+    restart: on-failure
     volumes:
       - ./api:/app/backend
     depends_on:

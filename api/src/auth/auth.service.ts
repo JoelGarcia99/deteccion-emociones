@@ -133,6 +133,8 @@ export class AuthService {
       },
     );
 
+    console.log("Created refresh token", refreshToken);
+
     // creating the session object
     await this.userRepository.update(user.id, {
       refreshToken,

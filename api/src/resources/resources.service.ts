@@ -1,26 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateResourceDto } from './dto/create-resource.dto';
-import { UpdateResourceDto } from './dto/update-resource.dto';
+import { Resource } from './entities/resource.entity';
 
 @Injectable()
 export class ResourcesService {
-  create(createResourceDto: CreateResourceDto) {
-    return 'This action adds a new resource';
+
+  constructor(
+    @InjectRepository(Resource)
+    private readonly resourceRepository: Repository<Resource>,
+  ) { }
+
+  async create(createResourceDto: CreateResourceDto) {
+    return await this.resourceRepository.save(createResourceDto);
   }
 
-  findAll() {
-    return `This action returns all resources`;
-  }
+  async findAll() {
+    const resources = await this.resourceRepository.find();
 
-  findOne(id: number) {
-    return `This action returns a #${id} resource`;
-  }
+    const resourcesMap: Map<string, Resource[]> = new Map();
 
-  update(id: number, updateResourceDto: UpdateResourceDto) {
-    return `This action updates a #${id} resource`;
-  }
+    // mapping all and building the final JSON grouped by the detected
+    // emotion
+    resources.forEach((resource) => {
+      resourcesMap[resource.proposito] = [
+        ...(resourcesMap[resource.proposito] ?? []),
+        resource,
+      ];
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} resource`;
+    return resourcesMap;
   }
 }

@@ -15,4 +15,7 @@ export class CreateResourceDto {
   @IsString({ message: "El embebido no es válido" })
   @IsOptional()
   embebido?: string;
+
+  @IsString()
+  proposito: string;
 }
