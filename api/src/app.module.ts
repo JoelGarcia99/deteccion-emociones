@@ -8,9 +8,13 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { UtilsModule } from './utils/utils.module';
 import { DeepfaceModule } from './deepface/deepface.module';
 import { ResourcesModule } from './resources/resources.module';
+import { MediaModule } from './media/media.module';
+import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
+    NestjsFormDataModule.config({ storage: MemoryStoredFile }),
     ConfigModule.forRoot({ validationSchema: joiValidationSchema }),
     ThrottlerModule.forRoot({
       ttl: 60,
@@ -25,7 +29,8 @@ import { ResourcesModule } from './resources/resources.module';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
     }),
-    UserModule, AuthModule, UtilsModule, DeepfaceModule, ResourcesModule
+    UserModule, AuthModule, UtilsModule,
+    DeepfaceModule, ResourcesModule, MediaModule, ImagesModule,
   ],
 })
 export class AppModule { }
