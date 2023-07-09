@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from '../../redux/store';
 import AppBarComponent from "../../shared_widgets/Navbar";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { User } from '../../../dominio/entities/user.entity';
 import UserController from '../../redux/events/user.event';
 import {
@@ -22,6 +22,8 @@ import {
 import { Bar, Pie } from 'react-chartjs-2';
 import classMerge from '../../../core/utils/class_merge';
 import StickyHeadTable from './table-history';
+import { Resource as IResource } from '../process/recommendations';
+import { translateEmotion } from '../../../core/utils/emotion_translator';
 
 
 
@@ -44,42 +46,82 @@ export const options = {
     },
     title: {
       display: true,
-      text: 'Historial de predicciones realizadas por mes'
+      text: 'Historial de predicciones realizadas por día'
     },
   },
 };
 
 const labels = [
-  'Enero',
-  'Febrero',
-  'Marzo',
-  'Abril',
-  'Mayo',
-  'Junio',
-  'Julio',
-  'Agosto',
-  'Septiembre',
-  'Octubre',
-  'Noviembre',
-  'Diciembre',
+  'Lunes',
+  'Martes',
+  'Miércoles',
+  'Jueves',
+  'Viernes',
+  'Sábado',
+  'Domingo',
 ];
+
+export interface IMedia {
+  id: string;
+  url: string;
+  tipo: string;
+  createdAt: string;
+}
+
+export interface IPrediccion {
+  id: string;
+  media: IMedia;
+  resource: IResource;
+  createdAt: string;
+}
 
 export const UserProfile = () => {
 
-  const { user } = useSelector((state: RootState) => state.auth) as AuthState;
+  const { user, accessToken } = useSelector((state: RootState) => state.auth) as AuthState;
 
   // Using the userAux as form handler
-  const [userAux, setUserAux] = useState<User>({
-    ...user!,
-  })
+  const [userAux, setUserAux] = useState<User | null>(null)
 
   const dispatch = useDispatch<AppDispatch>();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [userPredictions, setUserPredictions] = useState<IPrediccion[]>([]);
+
+  useEffect(() => {
+    setUserAux({ ...user! });
+  }, [user])
+
+  // loading data from SS
+  useEffect(() => {
+    if (!accessToken) {
+      return;
+    }
+
+    fetch(`${process.env.REACT_APP_API_HOST}/api/prediccion/`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    }).then(async (r) => {
+      if (!r.ok) {
+        alert((await r.json()).message);
+        return;
+      }
+
+      const data = await r.json();
+      data.sort((a: IPrediccion, b: IPrediccion) => {
+        return (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime();
+      });
+      setUserPredictions(data);
+    })
+  }, [accessToken]);
 
   // Used to determine if the user content changed in the form so we can show the update button
   // the [userAux] and [user] are compared to detect changes
   let divergentUser;
+
+  if (!userAux) {
+    return <h1>Cargando usuario...</h1>;
+  }
 
   if (userAux.emailRecuperacion !== user?.emailRecuperacion || userAux.nombre !== user?.nombre || userAux.fechaNacimiento !== user?.fechaNacimiento) {
     divergentUser = true;
@@ -103,18 +145,47 @@ export const UserProfile = () => {
     datasets: [
       {
         label: 'Predicciones',
-        data: labels.map(() => Math.random() * 100),
+        data: [1, 2, 3, 4, 5, 6, 0].map((day) => {
+          let counter = 0;
+
+          for (const prediction of userPredictions) {
+            const tempDate = new Date(prediction.createdAt);
+            const dbDay = (new Date(tempDate.getTime())).getDay()
+
+            if (day === dbDay) {
+              counter++;
+            }
+          }
+          return counter;
+        }),
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
     ],
   };
 
+  // extracting all the present emotions in predictions
+  const availableEmotions: string[] = [];
+
+  for (const emotion of userPredictions) {
+    if (!availableEmotions.includes(emotion.resource.proposito)) {
+      availableEmotions.push(emotion.resource.proposito);
+    }
+  }
+
+  const pieProcessedData = availableEmotions.map(
+    (emotion) => {
+      return userPredictions.filter(
+        prediction => emotion === prediction.resource.proposito
+      ).length
+    }
+  );
+
   const predictionsByEmotionsData = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    labels: availableEmotions.map((x) => translateEmotion(x)),
     datasets: [
       {
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
+        data: pieProcessedData,
+        label: '# de predicciones',
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',
@@ -243,25 +314,28 @@ export const UserProfile = () => {
         <div className="w-[60%] min-w-[500px]">
           <Bar options={options} data={predictionsByMonthData} />
         </div>
-        <div className='w-[30%] min-w-[300px]'>
-          <Pie data={predictionsByEmotionsData} options={{
-            plugins: {
-              legend: {
-                position: 'top' as const,
+        {
+          pieProcessedData.length > 0 &&
+          <div className='w-[30%] min-w-[300px]'>
+            <Pie data={predictionsByEmotionsData} options={{
+              plugins: {
+                legend: {
+                  position: 'top' as const,
+                },
+                title: {
+                  display: true,
+                  text: 'Predicciones por emociones'
+                }
               },
-              title: {
-                display: true,
-                text: 'Predicciones por emociones'
-              }
-            },
-          }} />
-        </div>
+            }} />
+          </div>
+        }
       </div>
       <div className="p-10">
         <h3 className="text-xl font-bold text-center">
           Historial de predicciones
         </h3>
-        <StickyHeadTable />
+        <StickyHeadTable predictions={userPredictions} />
       </div>
     </>
   );

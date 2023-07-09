@@ -11,7 +11,7 @@ interface RecommendationsProps {
   emotion: string | undefined | null;
 }
 
-interface Resource {
+export interface Resource {
   id: string;
   nombre: string;
   tipo: string;

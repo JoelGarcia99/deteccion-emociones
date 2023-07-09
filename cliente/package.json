@@ -21,7 +21,7 @@
     "@types/react-dom": "^18.0.10",
     "animate.css": "^4.1.1",
     "chart.js": "^4.3.0",
-    "dayjs": "^1.11.7",
+    "dayjs": "^1.11.9",
     "node-fetch": "^3.3.1",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
