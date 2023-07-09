@@ -18,8 +18,8 @@ import { AuthState } from '../redux/reducers/auth.reducer';
 import { useNavigate } from 'react-router-dom';
 import RouteNames from '../routes/names.route';
 
-const pages = ['Uso'];
-const settings = ['Perfil', 'Historial', 'Salir'];
+const pages: string[] = ['Home'];
+const settings = ['Home', 'Perfil & Historial', 'Predecir', 'Cerrar sesión'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -49,12 +49,20 @@ function ResponsiveAppBar() {
     const authController = new AuthController();
 
     switch (setting) {
-      case 'Salir': {
+      case 'Home': {
+        navigator(RouteNames.HOME);
+        break;
+      }
+      case 'Cerrar sesión': {
         dispatch(authController.logout());
         break;
       }
-      case 'Perfil': {
+      case 'Perfil & Historial': {
         navigator(RouteNames.PROFILE);
+        break;
+      }
+      case 'Predecir': {
+        navigator(RouteNames.PROCESS);
         break;
       }
       default: {
@@ -143,7 +151,7 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => navigator(RouteNames.HOME)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
