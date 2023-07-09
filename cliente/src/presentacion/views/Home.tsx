@@ -155,7 +155,7 @@ const HomeScreen = () => {
 
         <small>Universidad Técnica de Manabí</small>
         <br />
-        <small>Facultad de Ciencias Informáticas ©</small>
+        <small>Facultad de Ciencias Informáticas © 2023</small>
       </div>
       <div className="flex-col justify-start items-start text-white">
         <h1
@@ -203,7 +203,7 @@ const HomeScreen = () => {
           <div className="flex flex-col justify-center items-center gap-4">
             <Avatar alt="Remy Sharp" src="/zamora.jpg" style={{ width: "100px", height: "100px" }} />
             <span className="text-center">
-              Ronny Zamora Alférez
+              Zamora Ponce Ronny
             </span>
           </div>
         </div>
