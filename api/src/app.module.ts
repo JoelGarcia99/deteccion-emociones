@@ -11,6 +11,7 @@ import { ResourcesModule } from './resources/resources.module';
 import { MediaModule } from './media/media.module';
 import { MemoryStoredFile, NestjsFormDataModule } from 'nestjs-form-data';
 import { ImagesModule } from './images/images.module';
+import { PredictionsModule } from './predictions/predictions.module';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { ImagesModule } from './images/images.module';
       autoLoadEntities: true,
     }),
     UserModule, AuthModule, UtilsModule,
-    DeepfaceModule, ResourcesModule, MediaModule, ImagesModule,
+    DeepfaceModule, ResourcesModule, MediaModule, ImagesModule, PredictionsModule,
   ],
 })
 export class AppModule { }

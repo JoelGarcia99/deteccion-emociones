@@ -51,8 +51,13 @@ export class MediaService {
     });
   }
 
-  findAll() {
-    return `This action returns all media`;
+  async findAll(userId: string) {
+    // TODO: link with 'Prediccion' to filter by userId
+    return await this.mediaRepository.find({
+      where: {
+
+      },
+    });
   }
 
   findOne(id: number) {

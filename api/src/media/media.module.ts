@@ -11,6 +11,6 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
   imports: [
     TypeOrmModule.forFeature([Media]),
     NestjsFormDataModule
-  ]
+  ],
 })
 export class MediaModule { }

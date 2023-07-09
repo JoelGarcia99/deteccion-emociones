@@ -1,4 +1,4 @@
-import { IsEnum, IsString } from "class-validator";
+import { IsEnum } from "class-validator";
 import { HasMimeType, IsFile, MaxFileSize, MemoryStoredFile } from "nestjs-form-data";
 
 export class CreateMediaDto {
