@@ -1,6 +1,9 @@
 import { Button } from '@mui/material';
 import React, { ReactNode, useEffect } from 'react'
+import { useSelector } from 'react-redux';
 import { translateEmotion } from '../../../core/utils/emotion_translator';
+import { AuthState } from '../../redux/reducers/auth.reducer';
+import { RootState } from '../../redux/store';
 
 interface RecommendationsProps {
   onReboot: () => void;
@@ -8,66 +11,85 @@ interface RecommendationsProps {
   emotion: string | undefined | null;
 }
 
-
-export const gamesLink: any = {
-  'neutral': [
-    "https://cdn.htmlgames.com/Hangman/",
-    "https://cdn.htmlgames.com/NumberMaze/",
-    "https://cdn.htmlgames.com/HoneyBee/",
-    "https://cdn.htmlgames.com/EasterPile/",
-    "https://cdn.htmlgames.com/ToyFactory/",
-  ],
-  'angry': [
-    "https://cdn.htmlgames.com/ForestBubbles/",
-    "https://cdn.htmlgames.com/FrozenForChristmas/",
-    "https://cdn.htmlgames.com/ZooMysteries/",
-    "https://cdn.htmlgames.com/Bowling/",
-  ],
-  'happy': [
-    "https://cdn.htmlgames.com/MonkeyInTrouble/",
-    "https://cdn.htmlgames.com/ToyFactory/",
-    "https://cdn.htmlgames.com/Minesweeper/",
-    "https://cdn.htmlgames.com/BlockMonsters1010/",
-    "https://cdn.htmlgames.com/PlushyAnimals/",
-  ],
-  'sad': [
-    "https://cdn.htmlgames.com/GreedyWorm/",
-    "https://cdn.htmlgames.com/ClassicSnake/",
-    "https://cdn.htmlgames.com/WizardJewels/",
-    "https://cdn.htmlgames.com/ClassicSnake/",
-    "https://cdn.htmlgames.com/DarkMahjongConnect/",
-  ],
-  'fear': [
-    "https://cdn.htmlgames.com/GreedyWorm/",
-    "https://cdn.htmlgames.com/ClassicSnake/",
-    "https://cdn.htmlgames.com/WizardJewels/",
-    "https://cdn.htmlgames.com/ClassicSnake/",
-    "https://cdn.htmlgames.com/DarkMahjongConnect/",
-  ],
-  'surprise': [
-    "https://cdn.htmlgames.com/GreedyWorm/",
-    "https://cdn.htmlgames.com/ClassicSnake/",
-    "https://cdn.htmlgames.com/WizardJewels/",
-    "https://cdn.htmlgames.com/ClassicSnake/",
-    "https://cdn.htmlgames.com/DarkMahjongConnect/",
-  ]
+interface Resource {
+  id: string;
+  nombre: string;
+  tipo: string;
+  url: string;
+  embebido: string;
+  proposito: string;
 }
 
 export const Recommendations = (props: RecommendationsProps) => {
 
-  const emotion = props.emotion!;
-  const suggestion = gamesLink[emotion][
-    Math.floor(Math.random() * gamesLink[emotion].length)
-  ];
+  // extracting the access token
+  const { accessToken } = useSelector((state: RootState) => (state.auth as AuthState));
+  const [resources, setResources] = React.useState<any | null>(null);
+  const [suggestedResource, setSuggestedResource] = React.useState<Resource | null>(null);
 
-  // Here I'll save the prediction directly to the user account
   useEffect(() => {
-    // TODO: save the prediction to the user account
-    const emotion = props.emotion;
-    const image = props.imageSrc;
+    fetch(`${process.env.REACT_APP_API_HOST}/api/resources`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    })
+      .then(async (r) => {
+        if (!r.ok) {
+          alert((await r.json()).message[0]);
+          return;
+        }
+
+        const data = await r.json();
+
+        // setting the resources list
+        setResources(data);
+
+
+        const emotion = props.emotion;
+        const image = props.imageSrc;
+
+        const suggestedEmotionResources = data[emotion!];
+
+        const suggestion: Resource = suggestedEmotionResources[
+          Math.floor(Math.random() * suggestedEmotionResources.length)
+        ];
+
+        // updating the suggested emotion
+        setSuggestedResource(suggestion);
+
+        // const splittedBase64 = image!.split(',');
+        // const cleanedBlob = splittedBase64[1];
+
+        // parsing base64 image to blob
+        const blob = await fetch(image!).then((r) => r.blob());
+
+        console.log("Blob file is: ", blob);
+
+        // transforming base64 image to blob
+        const formData = new FormData();
+        formData.append('media[tipo]', 'image');
+        formData.append('media[file]', blob, 'image.jpg');
+        formData.append('emocionDetectada', emotion!);
+        formData.append('recursoId', suggestion.id);
+
+        // updating the predicted resource in the background
+        fetch(`${process.env.REACT_APP_API_HOST}/api/prediccion/`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          },
+          body: formData
+        });
+      })
   }, []);
 
-  console.log(props.imageSrc)
+  // preventing rendering the wrong content
+  if (!resources) {
+    return <h1>Cargando recursos, espere...</h1>;
+  }
+
+
+  // Here I'll save the prediction directly to the user account
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -92,9 +114,9 @@ export const Recommendations = (props: RecommendationsProps) => {
           className="flex w-full flex-col justify-start items-start"
         >
           <span className="text-xl font-bold text-indigo-500">
-            RECURSO RECOMENDADO
+            RECURSO RECOMENDADO: {suggestedResource?.nombre}
           </span>
-          <iframe src={suggestion} width="100%" height="500px"></iframe>
+          <iframe src={suggestedResource?.embebido ?? suggestedResource?.url} width="100%" height="500px"></iframe>
         </div>
       </div>
       <div className="flex flex-row justify-center my-8">
