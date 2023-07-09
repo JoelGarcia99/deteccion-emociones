@@ -6,7 +6,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 interface PublicRouteProps {
   /** Indica si el usuario esta autenticado */
-  isAuthenticated: boolean;
+  isAuthenticated: boolean | null;
 }
 
 /**

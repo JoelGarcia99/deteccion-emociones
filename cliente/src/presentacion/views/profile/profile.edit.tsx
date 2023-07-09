@@ -9,6 +9,60 @@ import dayjs from 'dayjs';
 import { useContext, useState } from 'react';
 import { User } from '../../../dominio/entities/user.entity';
 import UserController from '../../redux/events/user.event';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js';
+import { Bar, Pie } from 'react-chartjs-2';
+import classMerge from '../../../core/utils/class_merge';
+import StickyHeadTable from './table-history';
+
+
+
+// registering needed charts
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+);
+
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+    title: {
+      display: true,
+      text: 'Historial de predicciones realizadas por mes'
+    },
+  },
+};
+
+const labels = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+];
 
 export const UserProfile = () => {
 
@@ -42,6 +96,45 @@ export const UserProfile = () => {
   const updatePassword = () => {
     alert("Actualizando contraseña");
   }
+
+  // TODO:
+  const predictionsByMonthData = {
+    labels,
+    datasets: [
+      {
+        label: 'Predicciones',
+        data: labels.map(() => Math.random() * 100),
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+    ],
+  };
+
+  const predictionsByEmotionsData = {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [
+      {
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
 
   return (
     <>
@@ -136,6 +229,39 @@ export const UserProfile = () => {
             />
           </Grid>
         </Grid>
+        <div className="flex my-4 w-full justify-between items-center flex-row">
+          <span
+            className="text-2xl font-bold text-indigo-500"
+          >
+            {"Resumen estadístico".toUpperCase()}
+          </span>
+        </div>
+      </div>
+      <div className={classMerge(
+        'p-10 flex flex-row justify-evenly items-center flex-wrap',
+      )}>
+        <div className="w-[60%] min-w-[500px]">
+          <Bar options={options} data={predictionsByMonthData} />
+        </div>
+        <div className='w-[30%] min-w-[300px]'>
+          <Pie data={predictionsByEmotionsData} options={{
+            plugins: {
+              legend: {
+                position: 'top' as const,
+              },
+              title: {
+                display: true,
+                text: 'Predicciones por emociones'
+              }
+            },
+          }} />
+        </div>
+      </div>
+      <div className="p-10">
+        <h3 className="text-xl font-bold text-center">
+          Historial de predicciones
+        </h3>
+        <StickyHeadTable />
       </div>
     </>
   );

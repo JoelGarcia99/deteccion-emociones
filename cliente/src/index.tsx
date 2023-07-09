@@ -6,7 +6,7 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import "./index.css";
 import store, { AppDispatch, RootState } from './presentacion/redux/store';
 import { AuthState } from './presentacion/redux/reducers/auth.reducer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import AppActions from './presentacion/redux/actions';
 
 const root = createRoot(
@@ -16,6 +16,7 @@ const root = createRoot(
 const App = () => {
 
   const dispatch = useDispatch<AppDispatch>();
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     // buscando si el usuario tiene un token guardado en el local storage
@@ -31,11 +32,16 @@ const App = () => {
         },
       });
     }
+
+    // this is just to don't redirect the user to the home page if he 
+    // has an active session
+    setTimeout(() => {
+      setLoaded(true);
+    }, 300)
   }, []);
 
-
   const auth = useSelector((state: RootState) => state.auth) as AuthState;
-  const isAuthenticated = !!auth.accessToken && !!auth.user;
+  const isAuthenticated = !loaded ? null : (!!auth.accessToken && !!auth.user);
   return <RouterProvider router={router(isAuthenticated)} />
 }
 

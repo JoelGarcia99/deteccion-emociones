@@ -6,7 +6,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 interface PrivateRouteProps {
   /** Indica si el usuario esta autenticado */
-  isAuthenticated: boolean;
+  isAuthenticated: boolean | null;
 }
 
 /**
@@ -16,7 +16,18 @@ interface PrivateRouteProps {
 const PrivateWrapper = ({
   isAuthenticated,
 }: PrivateRouteProps) => {
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+
+  console.log("Authenticated wrapper", isAuthenticated);
+  if (isAuthenticated === undefined) {
+    return <h1>Cargando...</h1>;
+  }
+
+  if (isAuthenticated === false) {
+    return <Navigate to="/login" />;
+  }
+
+  return <Outlet />;
+
 }
 
 export default PrivateWrapper;
