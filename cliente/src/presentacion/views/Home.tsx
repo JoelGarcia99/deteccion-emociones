@@ -7,6 +7,7 @@ import RouteNames from "../routes/names.route";
 import MediaCard from "../shared_widgets/Card";
 import AppBarComponent from "../shared_widgets/Navbar";
 
+
 const HomeScreen = () => {
 
   const navigator = useNavigate();
@@ -111,12 +112,12 @@ const HomeScreen = () => {
     <footer
       className={
         classMerge(
-          "flex flex-col md:flex-row justify-start items-between gap-6 bg-indigo-900",
-          "p-[5rem] text-justify"
+          "flex flex-col md:flex-row justify-start items-between gap-[50px] bg-indigo-900",
+          "p-[3rem] text-justify border-b-2 border-white"
         )
       }
     >
-      <div className="flex-col justify-start items-start text-white">
+      <div className="flex-col justify-start items-start lg:max-w-[40%] text-white">
         <h1
           className="font-bold text-xl"
         >
@@ -132,9 +133,28 @@ const HomeScreen = () => {
         <br />
         <br />
 
-        <small>Universidad Técnica de Manabí</small>
+        <div className="flex gap-4 flex-row flex-wrap justify-center items-center">
+          <Avatar
+            alt="UTM logo"
+            src="/utm-logo.png"
+            style={{
+              width: "150px",
+              height: "150px",
+            }}
+          />
+          <img
+            alt="UTM logo"
+            src="/fci.png"
+            style={{
+              width: "130px",
+              height: "150px",
+            }}
+          />
+        </div>
         <br />
 
+        <small>Universidad Técnica de Manabí</small>
+        <br />
         <small>Facultad de Ciencias Informáticas ©</small>
       </div>
       <div className="flex-col justify-start items-start text-white">
@@ -144,6 +164,16 @@ const HomeScreen = () => {
           Tutor responsable
         </h1>
         <br />
+        <div className="flex flex-row justify-center">
+          <Avatar
+            alt="Remy Sharp"
+            src="/chancay.jpg"
+            style={{
+              width: "150px",
+              height: "150px",
+            }}
+          />
+        </div>
         <span>
           Ing. Leonardo Javier Chancay García, Ph.D
         </span>
@@ -157,19 +187,27 @@ const HomeScreen = () => {
         </h1>
         <br />
         <span>
-          El sistema fue desarrollado por estudiantes de la Universidad Técnica de Manabí como proyecto final de la carrera de ingeniría en sistemas de información
+          El sistema fue desarrollado por estudiantes de la Universidad Técnica de Manabí como proyecto final de la carrera de ingeniería en sistemas de información
         </span>
         <br />
         <br />
-        <div className="flex flex-row items-center gap-4">
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />&nbsp;Valeriano Saldarriaga Ricardo
+        <div
+          className="flex flex-row flex-wrap justify-center gap-4"
+        >
+          <div className="flex flex-col justify-center items-center gap-4">
+            <Avatar alt="Remy Sharp" src="/valeriano.jpg" style={{ width: "100px", height: "100px" }} />
+            <span className="text-center">
+              Valeriano Saldarriaga Ricardo
+            </span>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-4">
+            <Avatar alt="Remy Sharp" src="/zamora.jpg" style={{ width: "100px", height: "100px" }} />
+            <span className="text-center">
+              Ronny Zamora Alférez
+            </span>
+          </div>
         </div>
         <br />
-
-        <div className="flex flex-row items-center gap-4">
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />&nbsp;Ronny Zamora Alférez
-        </div>
-
       </div>
       <div className="flex-col justify-start items-start text-white"></div>
     </footer>
