@@ -11,9 +11,6 @@ import VideoLabelIcon from '@mui/icons-material/VideoLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
 import { WebcamCapture } from './webcam_capture';
-import { useState } from 'react';
-import { ClipLoader } from 'react-spinners';
-import socketIOClient, { Socket } from "socket.io-client";
 import { ImageProcessing } from './image_processing';
 import { Recommendations } from './recommendations';
 

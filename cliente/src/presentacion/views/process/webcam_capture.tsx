@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Webcam from 'react-webcam';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import classMerge from '../../../core/utils/class_merge';
 import { Button } from '@mui/material';
+import { translateEmotion } from '../../../core/utils/emotion_translator';
 
 interface WebcamCaptureProps {
   onNext: (base64Image: string) => void;
@@ -32,20 +33,39 @@ export const WebcamCapture = ({
   const [isMultiCapture, setIsMultiCapture] = React.useState<boolean>(false);
 
   // storing the first & second captures to see if there's any difference
-  const [firstCaptureEmotion, setFirstCaptureEmotion] = React.useState<string>('');
-  const [secondCaptureEmotion, setSecondCaptureEmotion] = React.useState<string>('');
+  const [firstCaptureEmotion, setFirstCaptureEmotion] = React.useState<string | null>(null);
+  const [secondCaptureEmotion, setSecondCaptureEmotion] = React.useState<string | null>(null);
+  const [devices, setDevices] = React.useState<MediaDeviceInfo[]>([]);
+
+  // loading the two images
+  const [firstBase64Image, setFirstBase64Image] = React.useState<string | undefined>(undefined);
+  const [secondBase64Image, setSecondBase64Image] = React.useState<string | undefined>(undefined);
+  const [targetImage, setTargetImage] = React.useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const recommendedImage = impactImagesList[
+      Math.floor(Math.random() * impactImagesList.length)
+    ];
+
+    setTargetImage(recommendedImage);
+  }, []);
+
 
   const onMultipleCapture = async (iter: number, base64: string) => {
+
+    // if the secondary image is already loaded then do nothing
+    if (secondBase64Image && firstBase64Image) {
+      return;
+    }
+
     // It'll help to show a random image of a cactus or something like that 
     // to see the impact on the user
-    setIsMultiCapture(iter < 2);
+    setIsMultiCapture(true);
 
-    // TODO:
     const blob = await fetch(base64).then((r) => r.blob());
     const url = `${process.env.REACT_APP_MODEL_HOST}/predict`;
     const formData = new FormData();
     formData.append('image', blob);
-
 
     const response = await fetch(url, {
       method: 'POST',
@@ -54,24 +74,44 @@ export const WebcamCapture = ({
 
     const data = await response.json();
 
+    if (data.ok === false) {
+      alert(data.error);
+      if (firstCaptureEmotion) {
+        setSecondBase64Image(undefined);
+        return;
+      }
+      else {
+        window.location.reload();
+      }
+    }
+
     if (iter < 2) {
+      setFirstBase64Image(base64);
+      setSecondBase64Image(undefined);
       setFirstCaptureEmotion(data.prediction);
     }
+    // if the secondary image isn't being captured yet then capture 
+    // it, otherwise do nothing with the event
     else {
+      setSecondBase64Image(base64);
       setSecondCaptureEmotion(data.prediction);
     }
   }
 
-  const [devices, setDevices] = React.useState<MediaDeviceInfo[]>([]);
-  const [base64Image, setBase64Image] = React.useState<string>('');
-
   const webcamRef = React.useRef<Webcam>(null);
   const capture = React.useCallback(
-    async () => {
+    async (): Promise<string | null | undefined> => {
       const imageSrc = webcamRef.current?.getScreenshot();
       if (imageSrc) {
-        setBase64Image(imageSrc);
+        if (isMultiCapture && !firstBase64Image) {
+          setFirstBase64Image(imageSrc);
+        }
+        else {
+          setSecondBase64Image(imageSrc);
+        }
       }
+
+      return imageSrc;
     },
     [webcamRef],
   );
@@ -151,20 +191,33 @@ export const WebcamCapture = ({
           )
         }
       >
-        <div
-          className='flex flex-col justify-center items-center'
-        >
-          <h1
-            className='text-[1.3rem] text-center font-bold'
+        {
+          firstBase64Image &&
+          <div
+            className="flex flex-col justify-center items-center"
           >
-            Captura de imagen
-          </h1>
-          <Webcam
-            videoConstraints={videoConstraints}
-            audio={false}
-            ref={webcamRef}
-          />
-        </div>
+            <h1
+              className='text-[1.3rem] text-center font-bold'
+            >
+              Imagen capturada {firstCaptureEmotion ? `(${translateEmotion(firstCaptureEmotion)})` : ''}
+            </h1>
+            <img src={firstBase64Image} />
+          </div> ||
+          <div
+            className='flex flex-col justify-center items-center'
+          >
+            <h1
+              className='text-[1.3rem] text-center font-bold'
+            >
+              Captura de imagen
+            </h1>
+            <Webcam
+              videoConstraints={videoConstraints}
+              audio={false}
+              ref={webcamRef}
+            />
+          </div>
+        }
         {
           firstCaptureEmotion &&
           <div className="flex flex-col items-center">
@@ -174,7 +227,7 @@ export const WebcamCapture = ({
               MIRA ESTA IMAGEN
             </h1>
             <img
-              src={impactImagesList[Math.floor(Math.random() * impactImagesList.length)]}
+              src={targetImage}
               alt=""
               style={{
                 objectFit: 'contain',
@@ -184,34 +237,65 @@ export const WebcamCapture = ({
           </div>
         }
         {
-          (base64Image) &&
+          ((secondBase64Image) && (!isMultiCapture) || ((secondBase64Image))) &&
           <div
             className="flex flex-col justify-center items-center"
           >
             <h1
               className='text-[1.3rem] text-center font-bold'
             >
-              Imagen capturada
+              Imagen capturada {secondCaptureEmotion ? `(${translateEmotion(secondCaptureEmotion)})` : ''}
             </h1>
-            <img src={base64Image} />
+            <img src={secondBase64Image} />
           </div>
+          || (
+            isMultiCapture &&
+            <div
+              className='flex flex-col justify-center items-center'
+            >
+              <h1
+                className='text-[1.3rem] text-center font-bold'
+              >
+                Capturar la segunda imagen
+              </h1>
+              <Webcam
+                videoConstraints={videoConstraints}
+                audio={false}
+                ref={webcamRef}
+              />
+            </div>
+          )
         }
       </div>
       <br />
 
       {
-        anyNotNull &&
+        (anyNotNull && !isMultiCapture) &&
         <Button
           variant="outlined"
           onClick={capture}
         >
           {
-            base64Image ? 'Capturar de nuevo' : 'Capturar'
+            secondBase64Image ? 'Capturar de nuevo' : 'Capturar'
           }
         </Button>
       }
       {
-        base64Image && <>
+        (firstBase64Image || secondBase64Image) &&
+        <>
+          <br />
+          {
+            (firstCaptureEmotion && secondCaptureEmotion) &&
+            <h2
+              className="text-xl font-bold text-indigo-500"
+            >
+              {
+                firstCaptureEmotion !== secondCaptureEmotion ?
+                  `▓▓▓▓ LA EMOCIóN HA CAMBIADO DE ${translateEmotion(firstCaptureEmotion)} A ${translateEmotion(secondCaptureEmotion)} ▓▓▓`.toUpperCase()
+                  : "▓▓▓▓ NO HA HABIDO UN IMPACTO CONSIDERABLE EN LA EMOCIóN ▓▓▓".toUpperCase()
+              }
+            </h2>
+          }
           <br />
 
           <div className="flex flex-row justify-center items-center gap-4">
@@ -219,12 +303,34 @@ export const WebcamCapture = ({
               variant="contained"
               sx={{ backgroundColor: 'orange' }}
               onClick={
-                () => onMultipleCapture(1, base64Image)
+                async () => {
+
+                  if (!firstBase64Image || !secondBase64Image) {
+                    let tempBase64Image: string | null | undefined;
+                    // capturing the second image if the first one already exists
+                    if (firstBase64Image) {
+                      tempBase64Image = await capture();
+                    }
+
+                    // Here I'm passing the secondBase64Image since it's always present 
+                    // regardless of the user's choice. If the user chooses to go for 
+                    // multi capture then the content of the secondary base64 image is 
+                    // passed to the first base64 image.
+                    onMultipleCapture(firstBase64Image ? 2 : 1, secondBase64Image ?? tempBase64Image!);
+                  }
+                  else {
+                    onNext(secondBase64Image!);
+                  }
+                }
               }
             >
               {
                 !isMultiCapture ?
-                  "Proceder con captura múltiple" : "Proceder con segunda captura"
+                  "Proceder con captura múltiple" :
+                  (
+                    firstBase64Image && secondBase64Image ?
+                      "Proceder con la predicción" : "Proceder con segunda captura"
+                  )
               }
             </Button>
             {
@@ -232,10 +338,10 @@ export const WebcamCapture = ({
               <Button
                 variant="contained"
                 onClick={
-                  () => onNext(base64Image)
+                  () => onNext(secondBase64Image!)
                 }
               >
-                Continuar al siguiente paso
+                Realizar la predicción
               </Button>
             }
           </div>

@@ -47,7 +47,7 @@ const HomeScreen = () => {
           Bienvenido al sistema de detección de emociones
         </h1>
         <hr />
-        <span>Herramienta de aprensizaje automático para la detección de emociones</span>
+        <span>Herramienta de aprendizaje automático para la detección de emociones</span>
         <br />
         <br />
         <br />

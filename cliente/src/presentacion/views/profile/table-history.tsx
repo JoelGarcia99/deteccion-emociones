@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import { translateEmotion } from "../../../core/utils/emotion_translator";
 import { IPrediccion } from "./profile.edit";
 import LaunchIcon from '@mui/icons-material/Launch';
-import Launch from "@mui/icons-material/Launch";
 import dayjs from "dayjs";
 
 interface Column {
