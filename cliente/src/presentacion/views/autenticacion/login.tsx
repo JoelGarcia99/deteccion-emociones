@@ -97,14 +97,6 @@ export default function SignIn() {
               Iniciar sesión
             </Button>
             <Grid container>
-              <Grid item xs>
-                <RRDLink
-                  to="#"
-                  className="text-blue-600 text-sm"
-                >
-                  ¿Olvidó su contraseña?
-                </RRDLink>
-              </Grid>
               <Grid item>
                 <RRDLink
                   to={RouteNames.REGISTER}
