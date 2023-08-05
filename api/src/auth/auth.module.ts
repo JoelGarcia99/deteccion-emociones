@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/strategy.jwt';
+import { MailUtil } from 'src/utils/mail.util';
+import { SecurityUtil } from 'src/utils/security.util';
 
 const jwtRegistration = JwtModule.registerAsync({
   imports: [],
@@ -16,7 +18,12 @@ const jwtRegistration = JwtModule.registerAsync({
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    MailUtil,
+    SecurityUtil,
+  ],
   imports: [
     TypeOrmModule.forFeature([User]),
     jwtRegistration,

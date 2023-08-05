@@ -4,6 +4,7 @@ import { UUIDUtil } from 'src/utils/uuid.util';
 import { Repository } from 'typeorm';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -42,6 +43,12 @@ export class UserService {
       throw new NotFoundException('Usuario no existe');
     }
 
-    return this.userRepository.update(id, updateUserDto);
+    // encrypting the password 
+    const password = bcrypt.hashSync(updateUserDto.password, 10);
+
+    return this.userRepository.update(id, {
+      ...updateUserDto,
+      password,
+    });
   }
 }

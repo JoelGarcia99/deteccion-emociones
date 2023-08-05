@@ -17,4 +17,9 @@ export class AuthController {
   async signIn(@Body() signIn: SignInDto) {
     return await this.authService.signIn(signIn);
   }
+
+  @Post('recover-password')
+  async recoverPassword(@Body() body: { email: string }) {
+    return await this.authService.recoverPassword(body);
+  }
 }

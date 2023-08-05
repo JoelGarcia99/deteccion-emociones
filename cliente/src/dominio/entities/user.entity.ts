@@ -6,4 +6,5 @@ export interface User {
   fechaNacimiento: Date;
   createdAt: Date;
   updatedAt: Date;
+  password?: string;
 }

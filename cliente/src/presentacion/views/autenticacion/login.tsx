@@ -2,8 +2,6 @@ import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -104,6 +102,36 @@ export default function SignIn() {
                 >
                   {"¿No tiene una cuenta? Regístrese"}
                 </RRDLink>
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid item>
+                <div
+                  onClick={() => {
+                    const host = process.env.REACT_APP_API_HOST;
+
+                    let email = prompt('Ingrese su correo electrónico');
+
+                    if (!email) {
+                      alert('Debe ingresar un correo electrónico');
+                      return;
+                    }
+
+                    fetch(`${host}/api/auth/recover-password`, {
+                      method: 'POST',
+                      body: JSON.stringify({
+                        email,
+                      })
+                    }).then(response => response.json()).then(data => {
+                      if (data.message) {
+                        alert(data.message);
+                      }
+                    });
+                  }}
+                  className="text-blue-600 text-sm cursor-pointer"
+                >
+                  {"¿Olvidó su contraseña?"}
+                </div>
               </Grid>
             </Grid>
           </Box>

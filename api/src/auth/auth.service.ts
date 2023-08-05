@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { TokenExpiredError } from "jsonwebtoken";
@@ -10,7 +10,8 @@ import { JwtService } from '@nestjs/jwt';
 import { IJWTPayload } from './interfaces/jwt.payload';
 import { SignInDto } from './dto/signin.dto';
 import { AccessTokenPayload } from './strategies/strategy.jwt';
-import { Session } from 'inspector';
+import { MailUtil } from 'src/utils/mail.util';
+import { SecurityUtil } from 'src/utils/security.util';
 
 export class RefreshTokenPayload {
   userId: string;
@@ -20,10 +21,51 @@ export class RefreshTokenPayload {
 @Injectable()
 export class AuthService {
 
+
+
+  async recoverPassword(body: { email: string; }) {
+    const { email } = body;
+
+    // searching if the user exists 
+    const user = await this.userRepository.findOne({
+      where: { email },
+    })
+
+    if (!user) {
+      throw new NotFoundException('Usuario no existe');
+    }
+
+    // generating new password 
+    const pass = this.securityUtil.generatePassword();
+
+    // encrypting the password
+    const hashedPassword = bcrypt.hashSync(pass, 10);
+
+    // updating the user
+    user.password = hashedPassword;
+
+    await this.userRepository.save(user);
+
+    // mailing the new password to the user 
+    await this.mailService.sendEmail({
+      to: [
+        {
+          email: user.email,
+          name: user.nombre,
+        },
+      ],
+      subject: "Recuperación de contraseña",
+      textPart: "Recuperación de contraseña",
+      htmlPart: `Su contraseña es ${pass}`,
+    });
+  }
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailUtil,
+    private readonly securityUtil: SecurityUtil,
   ) { }
 
   async signUp(signUp: SignUpDto): Promise<ISignUpResponse> {

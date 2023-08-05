@@ -17,6 +17,7 @@ export default class UserController {
         body: JSON.stringify({
           nombre: user.nombre,
           emailRecuperacion: user.emailRecuperacion,
+          password: user.password
         }),
       });
 

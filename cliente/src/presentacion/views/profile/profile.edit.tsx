@@ -132,11 +132,26 @@ export const UserProfile = () => {
   const updateData = () => {
     const userController = new UserController();
 
-    dispatch(userController.update(userAux));
+    dispatch(userController.update({
+      ...userAux,
+      password: password
+    }));
   }
 
   const updatePassword = () => {
-    alert("Actualizando contraseña");
+
+    // verifying the password matches
+    if (password !== confirmPassword) {
+      alert('Las contraseñas no coinciden');
+      return;
+    }
+
+    const userController = new UserController();
+
+    dispatch(userController.update({
+      ...userAux,
+      password: password,
+    }));
   }
 
   // TODO:
