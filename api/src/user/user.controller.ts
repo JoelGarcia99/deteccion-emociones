@@ -14,7 +14,6 @@ export class UserController {
 
     const output = request['user'] as JwtStrategyOutput;
 
-    console.log("output", output);
     const id = output.user.id;
 
     return await this.userService.findOne(id);

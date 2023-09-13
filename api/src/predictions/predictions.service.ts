@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
 import { CreatePredictionDto } from './dto/create-prediction.dto';
-import { UpdatePredictionDto } from './dto/update-prediction.dto';
 import { Prediction } from './entities/prediction.entity';
 import * as fs from 'fs';
 
@@ -59,11 +58,13 @@ export class PredictionsService {
       usuarioId,
     });
 
-    console.log(createdEntity);
     return await this.predictionsRepository.save(createdEntity);
   }
 
   async findAll(usuarioId: string) {
+
+    console.log("UserId: ", usuarioId);
+
     return await this.predictionsRepository.find({
       where: {
         usuarioId,
@@ -71,15 +72,4 @@ export class PredictionsService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} prediction`;
-  }
-
-  update(id: number, updatePredictionDto: UpdatePredictionDto) {
-    return `This action updates a #${id} prediction`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} prediction`;
-  }
 }

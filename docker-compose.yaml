@@ -33,6 +33,8 @@ services:
       - DB_NAME=deteccion_emociones
       - DB_HOST=db
       - JWT_SECRET=secret
+      - MAIL_JET_API_KEY=62137dd17f033face7064c1fbf3352e2
+      - MAIL_JET_API_SECRET=0308bb9f154ab96d5ae7f1d742a07ddb
   predictor:
     image: tde_predictor
     container_name: tde_predictor

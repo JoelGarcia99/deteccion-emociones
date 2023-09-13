@@ -32,7 +32,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(req: Request, payload: AccessTokenPayload): Promise<JwtStrategyOutput> {
-    console.log("Validation enteirng")
     const bearerToken = req.headers['authorization'].split(' ')[1];
 
     // getting the new access token 
@@ -54,6 +53,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         id: payload.userId,
       },
     });
+
+    console.log("user", user);
+    console.log("payload", payload);
 
     if (!user) {
       throw new UnauthorizedException("Inactive session");

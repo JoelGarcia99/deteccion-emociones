@@ -21,8 +21,6 @@ export class RefreshTokenPayload {
 @Injectable()
 export class AuthService {
 
-
-
   async recoverPassword(body: { email: string; }) {
     const { email } = body;
 
@@ -58,6 +56,10 @@ export class AuthService {
       textPart: "Recuperación de contraseña",
       htmlPart: `Su contraseña es ${pass}`,
     });
+
+    return {
+      message: "Se ha enviado un correo de recuperacion"
+    }
   }
 
   constructor(
@@ -141,6 +143,7 @@ export class AuthService {
       id: user.id,
     }
 
+    await this.createRefreshToken(user);
     const token = this.getJwtToken(payload);
 
     return {
@@ -150,6 +153,7 @@ export class AuthService {
   }
 
   private getJwtToken(payload: IJWTPayload) {
+
     const token = this.jwtService.sign(payload);
 
     return token;
@@ -174,8 +178,6 @@ export class AuthService {
         secret: process.env.JWT_SECRET
       },
     );
-
-    console.log("Created refresh token", refreshToken);
 
     // creating the session object
     await this.userRepository.update(user.id, {
