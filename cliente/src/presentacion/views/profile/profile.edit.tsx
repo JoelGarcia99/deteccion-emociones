@@ -350,7 +350,40 @@ export const UserProfile = () => {
       <div className="p-10">
         <h3 className="text-xl font-bold text-center">
           <span>Historial de predicciones</span>&nbsp;
-          <Button variant="outlined" endIcon={<SaveIcon />} className="mx-2">
+          <Button
+            variant="outlined"
+            id="download-data"
+            endIcon={<SaveIcon />}
+            className="mx-2"
+            onClick={() => {
+              if (!accessToken) {
+                console.log("No AT provided");
+                return;
+              }
+
+              fetch(`${process.env.REACT_APP_API_HOST}/api/prediccion/download`, {
+                headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                }
+              }).then(async (r) => {
+                const json = await r.json();
+                // Create a blob with the data we want to download as a file
+                const blob = new Blob([JSON.stringify(json)], { type: 'application/json' })
+                // Create an anchor element and dispatch a click event on it
+                // to trigger a download
+                const a = document.createElement('a')
+                a.download = "data.json"
+                a.href = window.URL.createObjectURL(blob)
+                const clickEvt = new MouseEvent('click', {
+                  view: window,
+                  bubbles: true,
+                  cancelable: true,
+                })
+                a.dispatchEvent(clickEvt)
+                a.remove()
+              })
+            }}
+          >
             Descargar
           </Button>
         </h3>

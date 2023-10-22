@@ -5,6 +5,7 @@ import { v4 } from 'uuid';
 import { CreatePredictionDto } from './dto/create-prediction.dto';
 import { Prediction } from './entities/prediction.entity';
 import * as fs from 'fs';
+import { Response } from 'express';
 
 @Injectable()
 export class PredictionsService {
@@ -16,6 +17,21 @@ export class PredictionsService {
     private readonly predictionsRepository: Repository<Prediction>,
   ) { }
 
+  /*
+  * Downloads all the history for the current user with the [id] extracted from the session.
+  */
+  async download(userId: string, response: Response) {
+    // querying all the records for the current user 
+    const records = await this.predictionsRepository.find({
+      where: {
+        usuarioId: userId,
+      }
+    });
+
+    response.header('Content-Disposition', 'attachment; filename=data.json');
+    response.header('Content-Type', 'application/json');
+    response.send(records);
+  }
 
   async create(usuarioId: string, createPredictionDto: CreatePredictionDto) {
 
