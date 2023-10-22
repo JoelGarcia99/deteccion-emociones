@@ -22,6 +22,7 @@ import {
 import { Bar, Pie } from 'react-chartjs-2';
 import classMerge from '../../../core/utils/class_merge';
 import StickyHeadTable from './table-history';
+import SaveIcon from '@mui/icons-material/Save';
 import { Resource as IResource } from '../process/recommendations';
 import { translateEmotion } from '../../../core/utils/emotion_translator';
 
@@ -348,7 +349,10 @@ export const UserProfile = () => {
       </div>
       <div className="p-10">
         <h3 className="text-xl font-bold text-center">
-          Historial de predicciones
+          <span>Historial de predicciones</span>&nbsp;
+          <Button variant="outlined" endIcon={<SaveIcon />} className="mx-2">
+            Descargar
+          </Button>
         </h3>
         <StickyHeadTable predictions={userPredictions} />
       </div>

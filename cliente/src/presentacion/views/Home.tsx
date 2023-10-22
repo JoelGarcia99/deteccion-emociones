@@ -90,22 +90,22 @@ const HomeScreen = () => {
         }
       >
         <MediaCard
-          title="Machine learning"
-          description="El sistema utiliza un modelo preentrenado de aprendizaje automático para la detección de emociones basado en Tensorflow."
-          targetUrl="https://www.tensorflow.org/js/models"
-          imageUrl="https://www.tensorflow.org/images/tf_logo_social.png"
+          title="Deep Face"
+          description="El sistema hace uso de Deep Face, un modelo pre-entrenado de Deep Learning el cuál ha sido adaptado para cumplir con los requerimientos del sistema."
+          targetUrl="https://github.com/serengil/deepface"
+          imageUrl="https://www.linuxadictos.com/wp-content/uploads/tensorflow-1.jpg"
         />
         <MediaCard
           title="OpenCV"
-          description="Utilizamos la librería OpenCV para la detección de rostros en las imágenes y realizar el procesamiento de las mismas."
+          description="Utilizamos la librería OpenCV para la detección de rostros en las imágenes y realizar procesos de reescalado sobre las mismas para mayor eficiencia."
           targetUrl="https://opencv.org/"
-          imageUrl="https://opencv.org/wp-content/uploads/2020/07/OpenCV_logo-1.png"
+          imageUrl="https://raw.githubusercontent.com/wiki/opencv/opencv/logo/OpenCV_logo_no_text.png"
         />
         <MediaCard
-          title="Módulo estadístico"
-          description="El sistema mantendrá un registro de las emociones detectadas a través del tiempo y las mostrará en un gráfico estadístico usando Matplotlib."
-          targetUrl="https://matplotlib.org/"
-          imageUrl="https://matplotlib.org/_static/logo2_compressed.svg"
+          title="Material UI"
+          description="El sistema está escrito sobre ReactJS usando la librería gráfica MaterialUI v4 para la creación rápida de componentes visuales con los últimos estándares en UI."
+          targetUrl="https://v4.mui.com/"
+          imageUrl="https://v4.mui.com/static/logo.png"
         />
       </div>
     </div>
