@@ -24,6 +24,7 @@ export class PredictionsController {
 
     const jwtRespone = request['user'] as JwtStrategyOutput;
 
+    console.log("Reached point", jwtRespone);
     return await this.predictionsService.findAll(jwtRespone.user.id);
   }
 }

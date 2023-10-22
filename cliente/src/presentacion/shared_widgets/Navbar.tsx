@@ -18,7 +18,7 @@ import { AuthState } from '../redux/reducers/auth.reducer';
 import { useNavigate } from 'react-router-dom';
 import RouteNames from '../routes/names.route';
 
-const pages: string[] = ['Home'];
+const pages: string[] = [];
 const settings = ['Home', 'Perfil & Historial', 'Predecir', 'Cerrar sesión'];
 
 function ResponsiveAppBar() {

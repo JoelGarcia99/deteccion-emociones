@@ -54,9 +54,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       },
     });
 
-    console.log("user", user);
-    console.log("payload", payload);
-
     if (!user) {
       throw new UnauthorizedException("Inactive session");
     }

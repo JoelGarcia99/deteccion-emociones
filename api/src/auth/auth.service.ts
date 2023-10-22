@@ -91,7 +91,7 @@ export class AuthService {
 
       // generando payload para el token
       const payload: IJWTPayload = {
-        id: dbUser.id,
+        userId: dbUser.id,
       };
 
       // generating tokens
@@ -140,8 +140,10 @@ export class AuthService {
     delete user.password;
 
     const payload: IJWTPayload = {
-      id: user.id,
+      userId: user.id,
     }
+
+    console.log("Payload used", payload);
 
     await this.createRefreshToken(user);
     const token = this.getJwtToken(payload);
@@ -326,7 +328,6 @@ export class AuthService {
 
     // next security layer: checking expiration time
     const isExpired = (decodedToken.exp * 1000) < Date.now();
-    console.log("Token expired")
 
     // if AT is expired then try to search for the refreshToken to determine if 
     // it's possible to update it or not
